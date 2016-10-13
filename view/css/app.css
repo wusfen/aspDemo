@@ -22,9 +22,9 @@
 .page-menu .phone .bottom .toggle{position: absolute; left:0; top:0; width: 3em; text-align: center; line-height: 3em}
 .page-menu .phone .bottom .menu{display: table; table-layout: fixed; width:100%}
 .page-menu .phone .bottom .menu li{display: table-cell; position: relative; border-left: solid 1px #bbb;vertical-align: middle;background:#fff}
-.page-menu .phone .bottom .menu li a{display: block; text-align: center; height: 3em; line-height: 3em}
+.page-menu .phone .bottom .menu li a{display: block; text-align: center; height: 3em; line-height: 3em;color:#333}
 .page-menu .phone .bottom .menu li a.active{ outline: solid 1px; z-index: 1; position: relative;}
-.page-menu .phone .bottom .menu li ul{position: absolute; bottom:100%; margin-bottom: 1px; left:-1px; right:-1px; border-right: solid 1px #bbb;box-shadow: 0 -2px 5px #ddd;background:#fff}
+.page-menu .phone .bottom .menu li ul{position: absolute; bottom:100%; margin-bottom: 1px; left:-1px; right:-1px; border-right: solid 1px #bbb;box-shadow: 0 -4px 5px -3px #ddd;background:#fff}
 .page-menu .phone .bottom .menu li ul li{display: block; border-top: solid 1px #bbb}
 .page-menu .phone .bottom .menu li ul li a{}
 
