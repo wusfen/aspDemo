@@ -14,7 +14,7 @@
 /*基础资料*/
 .page-info .icon{display: block; margin-bottom: 1em; width: 100px; height:100px}
 .page-info .upload-btn{position: relative;overflow: hidden}
-.page-info .upload-btn input{position: absolute;top:-9px;right:-9px;font-size: 99em;cursor: pointer}
+.page-info .upload-btn input{position: absolute;top:-9px;right:-9px;font-size: 99em;cursor: pointer;background: transparent;opacity: 0}
 
 .page-menu .phone{position: relative; width:320px;height:480px;border:solid 1px #bbb;box-shadow: 3px 3px 5px -1px #eee}
 .page-menu .phone .body{position: absolute; left:0;top:0;right:0;bottom:3em}
