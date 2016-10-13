@@ -16,6 +16,32 @@ onload = onhashchange = function () {
   $pages.hide();
   $page.show();
 }
+onload();
+
+
+/*
+storage
+*/
+function storage(key, val) {
+  if (window.localStorage) {
+    if (arguments.length==1) {
+      return (function(){
+        try{
+          return JSON.parse(localStorage[key]||'null');
+        }catch(e){
+          return localStorage[key]
+        }
+      })()
+    }
+    if (arguments.length>1) {
+      localStorage[key] = JSON.stringify(val);
+      return val
+    }
+  }
+}
+function appData(data) {
+  return data?storage('aspDemo', data):storage('aspDemo')
+}
 
 
 /*
@@ -23,7 +49,7 @@ vue
 */
 var vue = new Vue({
   el:'#app',
-  data:{
+  data: appData()||appData({
     account:'和多号',
     port:'',
     tel:'',
@@ -45,8 +71,13 @@ var vue = new Vue({
       }
     ],
     currMenu: null,
-    msgTpl:'尊敬的(.1*)用户，您的会员服务预计在(.2*)到期，请及时处理。'
-  },
+    msgTpl:'尊敬的(.1*)用户，您的会员服务预计在(.2*)到期，请及时处理。',
+    msgTplName: '到期提醒',
+    msgTplArgs:[
+      {a:'用户名', b:'1'},
+      {a:'到期时间', b:'2'}
+    ]
+  }),
   computed:{
     validation:function(){
       return {
@@ -55,6 +86,9 @@ var vue = new Vue({
     }
   },
   methods:{
+    save:function () {
+      appData(vue.$data)
+    },
     upload: function(e){
       var input = e.target;
       var file = input.files[0];
@@ -70,9 +104,9 @@ var vue = new Vue({
       var arr = to? to.children:this.menu;
       arr.push(this.currMenu={
         name:'new',
-        url:'',
+        url:'http://',
         children:[]
-      })
+      });
     },
     removeMenu: function(item){
       this.currMenu = null;
@@ -80,18 +114,51 @@ var vue = new Vue({
       for (var i = 0; i < arr.length; i++) {
         var t = arr[i];
         if (t==item) {
-          arr.splice(i,1)
+          arr.splice(i,1);break;
         }else{
           var arrSub = t.children;
           for (var j = 0; j < arrSub.length; j++) {
             var t = arrSub[j];
             if (t==item) {
-              arrSub.splice(j,1)
+              arrSub.splice(j,1);break;
             }
           }
         }
-
       }
+    },
+    addMsgArgAfter: function (arg) {
+      var arr = this.msgTplArgs;
+      if(!arg){
+        arr.push({a:'',b:''});
+        return;
+      }
+      for (var i = 0; i < arr.length; i++) {
+        if(arr[i]==arg){
+          arr.splice(i+1,0,{
+            a:'',
+            b:''
+          });
+          break;
+        }
+      }
+    },
+    removeMsgArg(arg){
+      var arr = this.msgTplArgs;
+      for (var i = 0; i < arr.length; i++) {
+        if(arr[i]==arg){
+          arr.splice(i,1);
+          break;
+        }
+      }
+      // 一个都没有，加个空的
+      // if (!arr.length) {
+      //   arr.push({a:'',b:''})
+      // }
     }
   }
-})
+});
+
+// 保存时机
+document.addEventListener('click', vue.save);
+// 页面进入时删除 currMenu 副本
+vue.currMenu=null

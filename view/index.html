@@ -64,19 +64,19 @@
               <div class="form-group">
                 <label class="form-label">短信端口号</label>
                 <div class="form-controls">
-                  <input class="input" type="text" placeholder="请输入5~20位数字">
+                  <input class="input" type="text" placeholder="请输入5~20位数字" v-model="port">
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label">客服热线</label>
                 <div class="form-controls">
-                  <input class="input" type="text" value="">
+                  <input class="input" type="text" v-model="tel">
                 </div>
               </div>
               <div class="form-group">
                 <label class="form-label"></label>
                 <div class="form-controls">
-                  <button class="button primary" type="submit" onclick="wu.toast('已提交成功，1-2个工作日内进行审核');return false">完成</button>
+                  <button class="button primary" type="submit" onclick="vue.save();wu.toast('已提交成功，1-2个工作日内进行审核');return false">完成</button>
                 </div>
               </div>
             </form>
@@ -116,19 +116,19 @@
                       <li v-for="sub in item.children">
                         <a href="{{sub.url}}" :class="{active:currMenu==sub}" @click.prevent="currMenu=sub">{{sub.name}}</a>
                       </li>
-                      <li>
+                      <li v-if="item.children.length<5">
                         <a href="#" @click.prevent="addMenu(item)">+</a>
                       </li>
                     </ul>
                   </li>
-                  <li>
+                  <li v-if="menu.length<3">
                     <a href="#" @click.prevent="addMenu()">+</a>
                   </li>
                 </ul>
               </div>
             </div>
             <div class="mg-v text-right">
-              <button class="button" type="button">菜单排序</button>
+              <!-- <button class="button" type="button">菜单排序</button> -->
             </div>
           </div>
           <div class="col span-7">
@@ -165,7 +165,7 @@
                   <div class="form-group">
                     <label class="form-label"></label>
                     <div class="form-controls">
-                      <button class="button primary" type="submit">保存并发布</button>
+                      <button class="button primary" type="submit" onclick="wu.toast('发布成功');return false">保存并发布</button>
                     </div>
                   </div>
                 </form>
@@ -190,28 +190,27 @@
           </div>
           <div class="form-group form-inline">
             <label class="form-label">模板名称：</label>
-            <input class="input" value="到期提醒">
+            <input class="input" v-model="msgTplName">
           </div>
           <div class="form-group">
             <table class="args">
               <tr>
                 <th>关键值字段</th>
                 <th>关键值参数</th>
+                <th>
+                  <a href="#" @click.prevent="addMsgArgAfter()">+</a>
+                </th>
               </tr>
-              <tr>
+              <tr v-for="arg in msgTplArgs">
                 <td>
-                  <input class="input">
+                  <input class="input" v-model="arg.a">
                 </td>
                 <td>
-                  <input class="input">
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input class="input">
+                  <input class="input" v-model="arg.b">
                 </td>
                 <td>
-                  <input class="input">
+                  <a href="#" @click.prevent="addMsgArgAfter(arg)">+</a>
+                  <a href="#" @click.prevent="removeMsgArg(arg)">-</a>
                 </td>
               </tr>
             </table>
@@ -219,7 +218,7 @@
           <div class="form-group">
             <label class="form-label"></label>
             <div class="form-controls">
-              <button class="button primary" type="submit">保存</button>
+              <button class="button primary" type="submit" onclick="wu.toast('保存成功');return false">保存</button>
             </div>
           </div>
         </form>
