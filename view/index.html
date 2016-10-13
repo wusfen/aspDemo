@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="renderer" content="webkit">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta name="MobileOptimized" content="320">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="full-screen" content="yes">
+  <meta name="x5-fullscreen" content="true">
+  <meta name="browsermode" content="application">
+  <meta name="x5-page-mode" content="app">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>综合管理系统</title>
+  <link rel="stylesheet" type="text/css" href="css/app.css">
+</head>
+
+<body id="app">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1 class="app-name">综合管理系统</h1>
+    </div>
+    <ul class="sidebar-menu">
+      <li style="background: #3c4353;" v-text="account||'公众号名称'">和多号</li>
+      <li> <a class="active" href="#page_info"> 基础资料 </a> </li>
+      <li> <a href="#page_menu"> 自定义菜单 </a> </li>
+      <li> <a href="#page_parse"> 短信解析 </a> </li>
+    </ul>
+  </div>
+  <div class="main">
+    <div class="navbar">
+      <div class="container width-auto">
+        <ul class="nav float-right">
+          <li>欢迎您，user</li>
+          <li><a href="">退出</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container width-auto">
+      <!-- 基础资料 -->
+      <div id="page_info" class="page-info ">
+        <div class="path mg-v">
+          <span>当前位置:</span>
+          <a href="">首页</a>
+          <a href="">短信公众号</a>
+          <a href="" v-text="account" v-text="account">和多号</a>
+          <span>基础资料</span>
+        </div>
+        <div class="row">
+          <div class="col span-6">
+            <form class="form-horizontal" style="width:400px" method="POST" action="">
+              <div class="form-group">
+                <label class="form-label">公众号名称</label>
+                <div class="form-controls">
+                  <input class="input" type="text" placeholder="请输入3~30个字符（1个汉字算2个字符）" v-model="account">
+                  <!-- <div class="muted" v-if="validation.account">请输入3~30个字符（1个汉字算2个字符）</div> -->
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">短信端口号</label>
+                <div class="form-controls">
+                  <input class="input" type="text" placeholder="请输入5~20位数字">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">客服热线</label>
+                <div class="form-controls">
+                  <input class="input" type="text" value="">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label"></label>
+                <div class="form-controls">
+                  <button class="button primary" type="submit" onclick="wu.toast('已提交成功，1-2个工作日内进行审核');return false">完成</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="co span-4 float-right">
+            <img class="icon" :src="iconUrl">
+            <div class="button upload-btn">
+              <input type="file" @change="upload"> 上传头像
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 自定义菜单 -->
+      <div id="page_menu" class="page-menu none">
+        <div class="path mg-v">
+          <span>当前位置:</span>
+          <a href="">首页</a>
+          <a href="">短信公众号</a>
+          <a href="" v-text="account">和多号</a>
+          <span>自定义菜单</span>
+        </div>
+        <div class="row">
+          <div class="col inline-block mg-r">
+            <div class="phone">
+              <div class="title">
+                <!-- 短信公众号 -->
+              </div>
+              <div class="body">
+                <iframe :src="currMenu.url" width="100%" height="100%"></iframe>
+              </div>
+              <div class="bottom">
+                <span class="toggle">三</span>
+                <ul class="menu">
+                  <li v-for="item in menu">
+                    <a href="{{item.url}}" :class="{active:currMenu==item}" @click.prevent="currMenu=item">{{item.name}}</a>
+                    <ul>
+                      <li v-for="sub in item.children">
+                        <a href="{{sub.url}}" :class="{active:currMenu==sub}" @click.prevent="currMenu=sub">{{sub.name}}</a>
+                      </li>
+                      <li>
+                        <a href="#" @click.prevent="addMenu(item)">+</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="#" @click.prevent="addMenu()">+</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="mg-v text-right">
+              <button class="button" type="button">菜单排序</button>
+            </div>
+          </div>
+          <div class="col span-7">
+            <div class="panel" v-if="currMenu">
+              <div class="panel-header text-center">
+                {{currMenu.name||'菜单名称'}}
+                <a class="float-right" href="#" @click.prevent="removeMenu(currMenu)">删除菜单</a>
+              </div>
+              <div class="panel-body">
+                <form class="form-horizontal" style="width:400px" method="POST" action="">
+                  <div class="form-group">
+                    <label class="form-label"></label>
+                    <div class="form-controls">
+                      <div class="muted" v-if="(currMenu.children&&currMenu.children.length)"> 已添加子菜单，仅可设置菜单名称 </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">菜单名称</label>
+                    <div class="form-controls">
+                      <input class="input" type="text" placeholder="请输入菜单名称" v-model="currMenu.name">
+                      <div class="muted"> 字数不超过4个汉字，8个字母 </div>
+                    </div>
+                  </div>
+                  <div class="form-group" v-if="!(currMenu.children&&currMenu.children.length)">
+                    <label class="form-label">菜单内容</label>
+                    <div class="form-controls">
+                      <label class="form-text"><input type="radio" checked> 跳转页面</label>
+                      <div class="">
+                        用户点击菜单会跳到以下地址
+                        <input class="input" type="text" v-model="currMenu.url" debounce="900">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label"></label>
+                    <div class="form-controls">
+                      <button class="button primary" type="submit">保存并发布</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 短信解析 -->
+      <div id="page_parse" class="page-parse none">
+        <div class="path mg-v">
+          <span>当前位置:</span>
+          <a href="">首页</a>
+          <a href="">短信公众号</a>
+          <a href="" v-text="account">和多号</a>
+          <span>短信解析</span>
+        </div>
+        <form class="" action="index.html" method="post">
+          <div class="form-group">
+            <label class="form-label">短信模板：</label>
+            <textarea class="input" style="min-height:6em" v-text="msgTpl"></textarea>
+          </div>
+          <div class="form-group form-inline">
+            <label class="form-label">模板名称：</label>
+            <input class="input" value="到期提醒">
+          </div>
+          <div class="form-group">
+            <table class="args">
+              <tr>
+                <th>关键值字段</th>
+                <th>关键值参数</th>
+              </tr>
+              <tr>
+                <td>
+                  <input class="input">
+                </td>
+                <td>
+                  <input class="input">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input class="input">
+                </td>
+                <td>
+                  <input class="input">
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="form-group">
+            <label class="form-label"></label>
+            <div class="form-controls">
+              <button class="button primary" type="submit">保存</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="lib/jquery.js"></script>
+  <script src="lib/vue.min.js"></script>
+  <script src="lib/wu.toast.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
