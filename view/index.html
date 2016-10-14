@@ -76,15 +76,17 @@
               <div class="form-group">
                 <label class="form-label"></label>
                 <div class="form-controls">
-                  <button class="button primary" type="submit" onclick="vue.save();wu.toast('已提交成功，1-2个工作日内进行审核');return false">完成</button>
+                  <button class="button primary" type="submit" onclick="vue.save();wu.toast('已提交成功，1-2个工作日内进行审核',3000);return false">完成</button>
                 </div>
               </div>
             </form>
           </div>
           <div class="co span-4 float-right">
-            <img class="icon" :src="iconUrl">
-            <div class="button upload-btn">
-              <input type="file" @change="upload"> 上传头像
+            <div class="inline-block text-center">
+              <img class="icon" :src="iconUrl">
+              <div class="button upload-btn">
+                <input type="file" @change="upload"> 上传图片
+              </div>
             </div>
           </div>
         </div>
@@ -105,7 +107,7 @@
                 <!-- 短信公众号 -->
               </div>
               <div class="body">
-                <iframe :src="currMenu.url" width="100%" height="100%"></iframe>
+                <iframe :src="currMenu.children&&currMenu.children.length?'':currMenu.url" width="100%" height="100%"></iframe>
               </div>
               <div class="bottom">
                 <span class="toggle">三</span>
@@ -186,7 +188,7 @@
         <form class="" action="index.html" method="post">
           <div class="form-group">
             <label class="form-label">短信模板：</label>
-            <textarea class="input" style="min-height:6em" v-text="msgTpl"></textarea>
+            <textarea class="input" style="min-height:6em" v-model="msgTpl"></textarea>
           </div>
           <div class="form-group form-inline">
             <label class="form-label">模板名称：</label>
@@ -198,7 +200,7 @@
                 <th>关键值字段</th>
                 <th>关键值参数</th>
                 <th>
-                  <a href="#" @click.prevent="addMsgArgAfter()">+</a>
+                  <a class="button small" href="#" @click.prevent="addMsgArgAfter()">+</a>
                 </th>
               </tr>
               <tr v-for="arg in msgTplArgs">
@@ -209,8 +211,8 @@
                   <input class="input" v-model="arg.b">
                 </td>
                 <td>
-                  <a href="#" @click.prevent="addMsgArgAfter(arg)">+</a>
-                  <a href="#" @click.prevent="removeMsgArg(arg)">-</a>
+                  <a class="button small" href="#" @click.prevent="addMsgArgAfter(arg)">+</a>
+                  <a class="button small" href="#" @click.prevent="removeMsgArg(arg)">-</a>
                 </td>
               </tr>
             </table>

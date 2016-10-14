@@ -96,6 +96,8 @@ var vue = new Vue({
       fileReader.onload = function () {
         var dataUrl = this.result;
         vue.iconUrl = dataUrl;
+
+        vue.save();
       }
       fileReader.readAsDataURL(file);
     },
@@ -150,10 +152,10 @@ var vue = new Vue({
           break;
         }
       }
-      // 一个都没有，加个空的
-      // if (!arr.length) {
-      //   arr.push({a:'',b:''})
-      // }
+      // 一个都没有，加个
+      if (true) {
+
+      }
     }
   }
 });
